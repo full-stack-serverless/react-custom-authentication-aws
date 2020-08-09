@@ -1,25 +1,50 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import { Auth, Hub } from 'aws-amplify'
 import './App.css';
 
+import UserContext from './UserContext'
+
 function App() {
+  const [currentUser, setCurrentUser] = useState({});
+  const [isLoaded, setIsLoaded] = useState({});
+  useEffect(() => {
+    updateCurrentUser();
+    listen();
+  }, [])
+  function listen() {
+    Hub.listen('auth', (data) => {
+      if (data.payload.event === 'signIn') {
+        updateCurrentUser();
+      }
+      if (data.payload.event === 'signOut') {
+        updateCurrentUser();
+      }
+    });
+  }
+  async function updateCurrentUser(user = null) {
+    if (user) {
+      setCurrentUser(user);
+      return
+    }
+    try {
+      const user = await Auth.currentAuthenticatedUser()
+      setCurrentUser(user);
+      setIsLoaded(true);
+    } catch (err) {
+      setCurrentUser(null);
+      setIsLoaded(true);
+    }
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <UserContext.Provider value={{
+      user: currentUser,
+      updateCurrentUser: updateCurrentUser,
+      isLoaded: isLoaded
+    }}>
+      <div className="App">
+        <Router />
+      </div>
+    </UserContext.Provider>
   );
 }
 
