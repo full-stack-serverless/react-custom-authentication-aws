@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Auth, Hub } from 'aws-amplify'
 import './App.css';
 
-import UserContext from './UserContext'
+import UserContext from './UserContext';
+import Router from './Router';
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
@@ -41,9 +42,7 @@ function App() {
       updateCurrentUser: updateCurrentUser,
       isLoaded: isLoaded
     }}>
-      <div className="App">
-        <Router />
-      </div>
+      <Router />
     </UserContext.Provider>
   );
 }

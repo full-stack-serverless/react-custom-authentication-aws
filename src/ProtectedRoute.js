@@ -1,13 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import {
   useLocation,
   Route,
   Redirect,
 } from 'react-router-dom'
 
+import UserContext from './UserContext';
+
 export default function PrivateRoute({
   component: Component, ...rest
-}, context) {
+}) {
+  const context = useContext(UserContext);
+
   let location = useLocation();
   useEffect(() => {
     context.updateCurrentUser()
@@ -26,7 +30,7 @@ export default function PrivateRoute({
         ) : (
           <Redirect
             to={{
-              pathname: "/auth",
+              pathname: "/profile",
             }}
           />
         )
