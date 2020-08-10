@@ -40,6 +40,7 @@ export default function Router() {
           <Route path="/profile" exact>
             <Profile />
           </Route>
+          { /* For a protected route, use the ProtectedRoute component */ }
           <ProtectedRoute
             exact
             path="/app"
