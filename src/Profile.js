@@ -15,6 +15,7 @@ const { primaryColor } = theme;
 
 export default function Profile() {
   const [formState, setFormState] = useState(intitialFormState);
+  const [loading, setLoading] = useState(true);
   const { username, email, password, authCode, formType } = formState;
   const [user, setUser] = useState(null);
   useEffect(() => {
@@ -26,8 +27,10 @@ export default function Profile() {
       const userData = await Auth.currentAuthenticatedUser();
       setUser(userData);
       setFormState(() => ({ ...formState, formType: 'signedIn' }));
+      setLoading(false);
     } catch (err) {
       setUser(null);
+      setLoading(false);
     }
   }
 
@@ -75,6 +78,7 @@ export default function Profile() {
     setFormState(() => ({ ...formState, formType: 'signUp' }));
     setUser(null);
   }
+  if (loading) return null
   return (
     <div>
       {
